@@ -1,0 +1,104 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+<!--
+  Copyright (c) 2017 Jean-Marc VIGLINO,
+  released under CeCILL-B (french BSD like) licence: http://www.cecill.info/
+-->
+  <title>ol-games: Map explode</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+  <meta name="description" content="An example of ol.featureAnimation to add explosions on a map." />
+  <meta name="keywords" content="ol, game, animation, explode, explosion" />
+
+  <!-- jQuery -->
+  <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.0.min.js"></script>
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <!-- OpenLayers -->
+  <link rel="stylesheet" href="https://openlayers.org/en/latest/legacy/ol.css" />
+  <script type="text/javascript" src="https://openlayers.org/en/latest/legacy/ol.js"></script>
+
+  <!-- ol-ext -->
+  <link rel="stylesheet" href="https://rawgit.com/Viglino/ol-ext/master/dist/ol-ext.css" />
+  <script type="text/javascript" src="https://rawgit.com/Viglino/ol-ext/master/dist/ol-ext.js"></script>
+
+  <!-- ol-games -->
+  <link rel="stylesheet" href="../dist/ol-games.css" />
+  <script type="text/javascript" src="../dist/ol-games.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body >
+  <a href="https://github.com/Viglino/ol-games" class="icss-github-corner"><i></i></a>
+
+  <a href="../index.html">
+    <h1>ol-games: Map explode</h1>
+  </a>
+  <div class="info">
+    <p>
+      Explosions are an integral part of games. Not that all games need explosions, but they play an 
+      important role in the game dynamics.
+      <br/>
+      An explosion consists of an <a href="https://github.com/Viglino/ol-ext/blob/gh-pages/featureanimation/featureanimation.js">
+      ol.featureAnimation</a>, which in turn creates several particles. 
+      It will calculate a random size, random speed, and random scaling factor for each particle.
+      So every explosion will be unique.
+      <br/>
+      Another way to realise explosions is by using sprites.
+    </p>
+    <p>
+      It was freely inspired by the <a href="http://mentalgrain.com/html5/explosion-fx-in-html5/">Mental Grain</a>
+      article: <a href="http://mentalgrain.com/html5/explosion-fx-in-html5/">"Explosion FX in HTML5"</a>.
+    </p>
+  </div>
+
+  <!-- DIV pour la carte -->
+  <div id="map" style="width:600px; height:400px;"></div>
+
+  <div class="options">
+    <h2>Options:</h2>
+    <p>
+      <i>Click on the map to create an explosion!</i>
+    </p>
+  </div>
+  
+  <script type="text/javascript">
+  // Layers    
+  var layer = new ol.layer.Tile({ source: new ol.source.Stamen({ layer: 'watercolor' }) });
+
+  // The map
+  var map = new ol.Map ({
+    target: 'map',
+    view: new ol.View ({
+      zoom: 5,
+      center: [166326, 5992663]
+    }),
+    layers: [layer]
+  });
+
+  // Sound
+  var boom = new ol.media.Audio({ source:"sound/268828.mp3" });
+
+  // Show an explosion at coord
+  function explode(coord) {
+    var f = new ol.Feature (new ol.geom.Point(coord));
+    var anim = new ol.featureAnimation.Explode({
+      duration:3000, 
+      easing: ol.easing.easeOut
+    });
+    map.animateFeature (f, anim);
+    boom.play(0);
+  }
+
+  // Show an explosion on click 
+  map.on('singleclick', function(evt) {
+    explode(evt.coordinate);
+  });
+
+  </script>
+  
+</body>
+</html>
